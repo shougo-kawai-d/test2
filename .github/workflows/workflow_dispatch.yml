@@ -18,3 +18,6 @@ jobs:
         REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
         echo $REMOTE_REPOSITORY
         echo "REMOTE_REPOSITORY=$REMOTE_REPOSITORY" >> $GITHUB_ENV
+    - name: git
+      run: |
+        echo ${{ env.REMOTE_REPOSITORY }}
