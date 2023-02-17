@@ -25,8 +25,8 @@ jobs:
         COUNT=$(git branch -a |grep $TARGET_REPOSITORY | wc -l)
         echo $COUNT
         echo "COUNT=$COUNT" >> $GITHUB_ENV
-    - name: git
-      if: ${{ env.COUNT }} > 1
+    - name: git a
+      if: env.COUNT > 1
       run: |
         BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | sed -e 's/${{ env.TARGET_REPOSITORY }}//g'  | sort -n -r | head -n 1 |  cut -f 3 -d "_")
         echo $BRANCH_NUMBER
@@ -35,8 +35,8 @@ jobs:
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_${NEW_BRANCH_NUMBER}"
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
-    - name: git
-      if: ${{ env.COUNT }} == 1
+    - name: git b
+      if: env.COUNT }} == 1
       run: |
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_1"
         echo $NEW_REPOSITORY
