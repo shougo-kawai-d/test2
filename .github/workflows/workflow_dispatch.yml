@@ -36,7 +36,7 @@ jobs:
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
     - name: git b
-      if: env.COUNT }} == 1
+      if: env.COUNT == 1
       run: |
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_1"
         echo $NEW_REPOSITORY
