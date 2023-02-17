@@ -43,8 +43,9 @@ jobs:
     - name: git
       run: |
         LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
+        git checkout main
         git branch -D $LOCAL_REPOSITORY
         git checkout $LOCAL_REPOSITORY
         git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
         git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
-        git push --set-upstream origin "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
+        git push --set-upstream origin "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
