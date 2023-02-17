@@ -33,7 +33,7 @@ jobs:
     - name: 対象リポジトリーの数が１以上の場合
       if: env.COUNT > 1
       run: |
-        BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | grep ${{ env.TARGET_REPOSITORY }}  | sort -n -r | head -n 1 |  cut -f 3 -d "_")
+        BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | grep ${{ env.TARGET_REPOSITORY }} | cut -f 3 -d "_"  | sort -n -r | head -n 1 )
         echo $BRANCH_NUMBER
         NEW_BRANCH_NUMBER=$(expr $BRANCH_NUMBER + 1)
         echo $NEW_BRANCH_NUMBER
