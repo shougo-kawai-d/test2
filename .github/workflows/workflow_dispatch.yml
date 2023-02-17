@@ -7,11 +7,7 @@ env:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-      pull-requests: write
-      repository-projects: read
+    permissions: write-all
     steps:
     - uses: actions/checkout@v2
     - name: git setting
