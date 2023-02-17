@@ -23,7 +23,7 @@ jobs:
         echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
     - name: git a a
       run: |
-        COUNT=$(git branch -a |grep ${{ env.TARGET_REPOSITORY}} | wc -l)
+        COUNT=$(git branch -a |grep "${{ env.TARGET_REPOSITORY}}" | wc -l)
         echo $COUNT
         echo "COUNT=$COUNT" >> $GITHUB_ENV
     - name: git b
