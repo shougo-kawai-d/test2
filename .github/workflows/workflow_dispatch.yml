@@ -46,8 +46,15 @@ jobs:
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
     - name: git d
       run: |
-        LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
+        LOCAL_REPOSITORY_COUNT=$(git branch |grep "${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}" | awk 'length < 39' |wc -l)
+        echo "LOCAL_REPOSITORY_COUNT=$LOCAL_REPOSITORY_COUNT" >> $GITHUB_ENV
+    - name: git e
+      if: env.LOCAL_REPOSITORY_COUNT == 1
+      run: |
         git branch -D $LOCAL_REPOSITORY
+    - name: git f
+      run: |
+        LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
         git checkout $LOCAL_REPOSITORY
         git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
         git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
