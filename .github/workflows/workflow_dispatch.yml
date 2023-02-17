@@ -41,4 +41,9 @@ jobs:
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_1"
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
-
+    - name: git c
+      run: |
+        LOCAL_REPOSITORY=${{ env.exe_env }} + ${{ env.TARGET_REPOSITORY }}
+        echo $LOCAL_REPOSITORY
+        echo ${{ env.REMOTE_REPOSITORY }}
+        echo "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
