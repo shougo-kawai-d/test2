@@ -21,7 +21,9 @@ jobs:
         TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -n -r | head -n 1 | sed -e 's/ //g')
         echo $TARGET_REPOSITORY
         echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
-        COUNT=$(git branch -a |grep ${TARGET_REPOSITORY} | wc -l)
+    - name: git a a
+      run: |
+        COUNT=$(git branch -a |grep ${{ env.TARGET_REPOSITORY}} | wc -l)
         echo $COUNT
         echo "COUNT=$COUNT" >> $GITHUB_ENV
     - name: git b
