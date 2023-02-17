@@ -31,7 +31,6 @@ jobs:
         BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }}${{ env.TARGET_REPOSITORY }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | sed -e 's/${{ env.TARGET_REPOSITORY }}//g'  | sort -nr | head -n 1 |  cut -f 2 -d "_")
         echo $BRANCH_NUMBER
         NEW_BRANCH_NUMBER=$(expr $BRANCH_NUMBER + 1)
-        echo $NEW_BRANCH_NUMBER
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_${NEW_BRANCH_NUMBER}"
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
@@ -44,6 +43,8 @@ jobs:
     - name: git c
       run: |
         LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
-        echo $LOCAL_REPOSITORY
-        echo "remotes/origin/${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
-        echo "${{ env.NEW_REPOSITORY }}
+        git branch -D $LOCAL_REPOSITORY
+        git checkout "remotes/origin/${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
+        git branch "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
+        git checkout "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
+        git push --set-upstream origin "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
