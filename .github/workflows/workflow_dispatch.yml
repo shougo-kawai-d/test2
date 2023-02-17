@@ -47,6 +47,7 @@ jobs:
     - name: git d
       run: |
         LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
+        git branch -D $LOCAL_REPOSITORY
         git checkout $LOCAL_REPOSITORY
         git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
         git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
