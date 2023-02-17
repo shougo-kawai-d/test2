@@ -42,9 +42,9 @@ jobs:
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
     - name: git
       run: |
-        LOCAL_REPOSITORY=${{ env.exe_env }} + ${{ env.TARGET_REPOSITORY }}
+        LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
         git branch -D $LOCAL_REPOSITORY
-        git checkout ${{ env.REMOTE_REPOSITORY }}
-        git branch "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
-        git checkout "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
-        git push --set-upstream origin "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
+        git checkout $LOCAL_REPOSITORY
+        git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
+        git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
+        git push --set-upstream origin "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
