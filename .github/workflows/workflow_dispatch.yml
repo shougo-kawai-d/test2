@@ -8,9 +8,9 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     permissions:
-      actions: read|write
-      pull-requests: read|write
-      repository-projects: read|write
+      actions: write
+      pull-requests: write
+      repository-projects: write
     steps:
     - uses: actions/checkout@v2
     - name: git setting
