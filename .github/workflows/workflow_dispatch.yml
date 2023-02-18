@@ -15,6 +15,36 @@ jobs:
         git config --local user.name "shougo kawai"
     - name: git
       run: |
-        REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
+        git pull
+        REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
         echo $REMOTE_REPOSITORY
         echo "REMOTE_REPOSITORY=$REMOTE_REPOSITORY" >> $GITHUB_ENV
+        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -nr | head -n 1 |sed 's/ //g')
+        echo $TARGET_REPOSITORY
+        echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
+        COUNT=$(git branch -a |grep $TARGET_REPOSITORY | wc -l)
+        echo $COUNT
+        echo "COUNT=$COUNT" >> $GITHUB_ENV
+    - name: git a
+      if: env.COUNT > 1
+      run: |
+        BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }}${{ env.TARGET_REPOSITORY }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | sed -e 's/${{ env.TARGET_REPOSITORY }}//g'  | sort -nr | head -n 1 |  cut -f 2 -d "_")
+        echo $BRANCH_NUMBER
+        NEW_BRANCH_NUMBER=$(expr $BRANCH_NUMBER + 1)
+        NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_${NEW_BRANCH_NUMBER}"
+        echo $NEW_REPOSITORY
+        echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
+    - name: git b
+      if: env.COUNT == 1
+      run: |
+        NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_1"
+        echo $NEW_REPOSITORY
+        echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
+    - name: git c
+      run: |
+        LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
+        git branch -D $LOCAL_REPOSITORY
+        git checkout "remotes/origin/${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
+        git branch "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
+        git checkout "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
+        git push --set-upstream origin "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
