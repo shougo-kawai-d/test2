@@ -1,0 +1,26 @@
+name: test環境用デプロイ
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push_test_branch_to_CloudBuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout develop
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+
+      - name: Set current formatted datetime as env variable
+        env:
+          TZ: 'Asia/Tokyo'
+        run: echo "REPS_DATE=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
+        
+      - name: Create new Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout -b gcp-test-deploy-release${{ env.REPS_DATE }}
+          git push origin gcp-test-deploy-release${{ env.REPS_DATE }}
