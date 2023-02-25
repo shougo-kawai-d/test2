@@ -3,28 +3,25 @@ name: workflow_dispatch
 on:
   workflow_dispatch:
 env:
-  exe_env : gcp-test-deploy-release
+  exe_env : gcp-development-test-release
 jobs:
-  dispatch:
+  rename_rebuild_test_branch_to_CloudBuild:
     runs-on: ubuntu-latest
-    permissions: write-all
     steps:
     - uses: actions/checkout@v2
     - name: git setting
       run: |
         git config --local user.email "shougo_kawai@c.dwango.co.jp"
         git config --local user.name "shougo kawai"
-    - name: 対象リポジトリー取得
+    - name: git
       run: |
-        git pull
         REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
         echo $REMOTE_REPOSITORY
         echo "REMOTE_REPOSITORY=$REMOTE_REPOSITORY" >> $GITHUB_ENV
-    - name: 日付抽出
-      run: |
-        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -n -r | head -n 1 | sed -e 's/ //g')
+        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -n -r | head -n 1)
         echo $TARGET_REPOSITORY
         echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
+
     - name: 新しいリポジトリ名を生成
       run: |
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_"$(date +"%s")
