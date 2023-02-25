@@ -6,21 +6,23 @@ on:
 jobs:
   push_test_branch_to_CloudBuild:
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout develop
-        uses: actions/checkout@v2
-        with:
-          ref: develop
-
-      - name: Set current formatted datetime as env variable
-        env:
-          TZ: 'Asia/Tokyo'
-        run: echo "REPS_DATE=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
-        
-      - name: Create new Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git checkout -b gcp-test-deploy-release${{ env.REPS_DATE }}
-          git push --set-upstream origin gcp-test-deploy-release${{ env.REPS_DATE }}
+    - uses: actions/checkout@v2
+    - name: git setting
+      run: |
+        git config --local user.email "shougo_kawai@c.dwango.co.jp"
+        git config --local user.name "shougo kawai"
+    - name: git setting
+      run: |
+        git pull
+        git checkout develop
+    - name: Set current formatted datetime as env variable
+      env:
+        TZ: 'Asia/Tokyo'
+      run: echo "REPS_DATE=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
+    - name: Create new Branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git checkout -b gcp-test-deploy-release${{ env.REPS_DATE }}
+        git push --set-upstream origin gcp-test-deploy-release${{ env.REPS_DATE }}
