@@ -1,4 +1,4 @@
-name: test環境再デプロイ
+name: test環境リネーム再デプロイ
  
 on:
   workflow_dispatch:
