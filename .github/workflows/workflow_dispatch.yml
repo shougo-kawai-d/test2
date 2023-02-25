@@ -7,44 +7,57 @@ env:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
     - uses: actions/checkout@v2
     - name: git setting
       run: |
         git config --local user.email "shougo_kawai@c.dwango.co.jp"
         git config --local user.name "shougo kawai"
-    - name: git
+    - name: 対象リポジトリー取得
       run: |
         git pull
-        REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
+        REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
         echo $REMOTE_REPOSITORY
         echo "REMOTE_REPOSITORY=$REMOTE_REPOSITORY" >> $GITHUB_ENV
-        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -nr | head -n 1 |sed 's/ //g')
+    - name: 日付抽出
+      run: |
+        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -n -r | head -n 1 | sed -e 's/ //g')
         echo $TARGET_REPOSITORY
         echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
-        COUNT=$(git branch -a |grep $TARGET_REPOSITORY | wc -l)
+    - name: 対象リポジトリーの数を取得
+      run: |
+        COUNT=$(git branch -a |grep "${{ env.TARGET_REPOSITORY}}" | wc -l)
         echo $COUNT
         echo "COUNT=$COUNT" >> $GITHUB_ENV
-    - name: git a
+    - name: 対象リポジトリーの数が１以上の場合
       if: env.COUNT > 1
       run: |
-        BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }}${{ env.TARGET_REPOSITORY }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | sed -e 's/${{ env.TARGET_REPOSITORY }}//g'  | sort -nr | head -n 1 |  cut -f 2 -d "_")
+        BRANCH_NUMBER=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length > 18' | grep ${{ env.TARGET_REPOSITORY }} | cut -f 3 -d "_"  | sort -n -r | head -n 1 )
         echo $BRANCH_NUMBER
         NEW_BRANCH_NUMBER=$(expr $BRANCH_NUMBER + 1)
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_${NEW_BRANCH_NUMBER}"
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
-    - name: git b
+    - name: 対象リポジトリーの数が１の場合
       if: env.COUNT == 1
       run: |
         NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_1"
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
-    - name: git c
+    - name: 対象リポジトリーがローカルにあるか確認
+      run: |
+        LOCAL_REPOSITORY_COUNT=$(git branch |grep "${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}" | awk 'length < 39' |wc -l)
+        echo "LOCAL_REPOSITORY_COUNT=$LOCAL_REPOSITORY_COUNT" >> $GITHUB_ENV
+    - name: 対象リポジトリーがローカルにある場合は削除
+      if: env.LOCAL_REPOSITORY_COUNT == 1
+      run: |
+        git branch -D $LOCAL_REPOSITORY
+    - name: 新しい枝番をつけてPUSH
       run: |
         LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
-        git branch -D $LOCAL_REPOSITORY
-        git checkout "remotes/origin/${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
-        git branch "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
-        git checkout "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
-        git push --set-upstream origin "${{ env.exe_env }}${{env.TARGET_REPOSITORY}}"
+        git checkout $LOCAL_REPOSITORY
+        git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
+        git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
+        git push --set-upstream origin "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
+
