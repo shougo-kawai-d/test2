@@ -35,5 +35,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+      　echo ${{ env.GITHUB_TOKEN }}
         git checkout -b gcp-test-deploy-release${{ env.REPS_DATE }}
         git push --set-upstream origin gcp-test-deploy-release${{ env.REPS_DATE }}
