@@ -32,9 +32,6 @@ jobs:
         TZ: 'Asia/Tokyo'
       run: echo "REPS_DATE=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
     - name: Create new Branch
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo $GITHUB_TOKEN
         git checkout -b gcp-test-deploy-release${{ env.REPS_DATE }}
         git push --set-upstream origin gcp-test-deploy-release${{ env.REPS_DATE }}
