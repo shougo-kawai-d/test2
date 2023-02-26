@@ -3,7 +3,7 @@ name: test環境リネーム再デプロイ
 on:
   workflow_dispatch:
 env:
-  exe_env : gcp-development-test-release
+  exe_env : gcp-test-deploy-release
 jobs:
   rename_rebuild_test_branch_to_CloudBuild:
     runs-on: ubuntu-latest
