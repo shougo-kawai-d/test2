@@ -7,6 +7,17 @@ env:
 jobs:
   rename_rebuild_test_branch_to_CloudBuild:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      checks: write
+      contents: write
+      deployments: write
+      issues: write
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
     steps:
     - uses: actions/checkout@v2
     - name: git setting
