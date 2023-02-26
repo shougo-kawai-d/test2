@@ -36,7 +36,7 @@ jobs:
 
     - name: 新しいリポジトリ名を生成
       run: |
-        NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_"$(date +"%s") | sed 's/ //g'
+        NEW_REPOSITORY=$(tr -d " " "${{ env.TARGET_REPOSITORY }}_"$(date +"%s"))
         echo $NEW_REPOSITORY
         echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
     - name: 新しいリポジトリをPUSH
