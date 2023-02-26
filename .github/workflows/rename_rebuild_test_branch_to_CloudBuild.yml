@@ -20,10 +20,6 @@ jobs:
       statuses: write
     steps:
     - uses: actions/checkout@v2
-    - name: git setting
-      run: |
-        git config --local user.email "shougo_kawai@c.dwango.co.jp"
-        git config --local user.name "shougo kawai"
     - name: git
       run: |
         git pull
