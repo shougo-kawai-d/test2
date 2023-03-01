@@ -1,0 +1,43 @@
+name: aaaa
+ 
+on:
+  workflow_dispatch:
+env:
+  exe_env : gcp-test-deploy-release
+jobs:
+  rename_rebuild_test_branch_to_CloudBuild:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      checks: write
+      contents: write
+      deployments: write
+      issues: write
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
+    steps:
+    - uses: actions/checkout@v2
+    - name: git
+      run: |
+        git pull
+        REMOTE_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | awk 'length < 56' |sort -n -r | head -n 1)
+        echo $REMOTE_REPOSITORY
+        echo "REMOTE_REPOSITORY=$REMOTE_REPOSITORY" >> $GITHUB_ENV
+        TARGET_REPOSITORY=$(git branch -a | grep remotes/origin/${{ env.exe_env }} | sed -e 's/remotes\/origin\/${{ env.exe_env }}//g' | awk 'length <18' | sort -n -r | head -n 1 | sed "s/ //g")
+        echo $TARGET_REPOSITORY
+        echo "TARGET_REPOSITORY=$TARGET_REPOSITORY" >> $GITHUB_ENV
+    - name: 新しいリポジトリ名を生成
+      run: |
+        NEW_REPOSITORY="${{ env.TARGET_REPOSITORY }}_"$(date +"%s")
+        echo $NEW_REPOSITORY
+        echo "NEW_REPOSITORY=$NEW_REPOSITORY" >> $GITHUB_ENV
+    - name: 新しいリポジトリをPUSH
+      run: |
+        LOCAL_REPOSITORY=${{ env.exe_env }}${{ env.TARGET_REPOSITORY }}
+        git checkout $LOCAL_REPOSITORY
+        git branch ${{ env.exe_env }}${{ env.NEW_REPOSITORY }}
+        git checkout "${{ env.exe_env }}${{env.NEW_REPOSITORY}}"
+        git push --set-upstream origin "${{ env.exe_env }}${{ env.NEW_REPOSITORY }}"
